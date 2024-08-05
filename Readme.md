@@ -9,3 +9,5 @@ Setup with
 * yadm to pull dotfiles
 * homebrew to install packages
 * mr to map repositories
+
+Inspired by https://github.com/bjartek/dotfiles
