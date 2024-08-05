@@ -1,0 +1,15 @@
+
+[repos/work/evga]
+checkout = git clone 'git@github.com:jakubjenis/evga.git' 'evga'
+
+[repos/work/evga-app]
+checkout = git clone 'git@github.com:jakubjenis/evga-app.git' 'evga-app'
+
+[repos/work/grason]
+checkout = git clone 'git@github.com:grason-app/grason-plan-react.git' 'grason'
+
+[repos/work/matevolno]
+checkout = git clone 'git@github.com:jakubjenis/matevolno.git' 'matevolno'
+
+[repos/work/gcc]
+checkout = git clone 'git@github.com:jakubjenis/gcc-conf.git' 'gcc'
