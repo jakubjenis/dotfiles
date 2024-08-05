@@ -141,13 +141,6 @@ alias mc='mc -u'
 alias tf='terraform'
 alias tg='terragrunt'
 
-# ------------ Flutter -----------
-export PATH="$PATH:/Users/jakubjenis/development/flutter/bin"
-
-# ------------ Angular CLI -----------
-# Load autocomplete
-source <(ng completion script)
-
 PATH=~/.console-ninja/.bin:$PATH
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
