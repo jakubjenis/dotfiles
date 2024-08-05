@@ -106,6 +106,7 @@ eval "$(fzf --zsh)"
 
 # ------------ Zoxide -------------
 alias cd='z'
+eval "$(zoxide init zsh)"
 
 # ------------ Eza -----------
 if [ -x "$(command -v eza)" ]; then
