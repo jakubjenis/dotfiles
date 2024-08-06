@@ -1,5 +1,31 @@
 #!/bin/bash
 
+# Function to validate email
+validate_email() {
+    if [[ "$1" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Check if email is provided as an argument
+if [ $# -eq 1 ]; then
+    EMAIL=$1
+else
+    # Ask for email interactively
+    while true; do
+        read -p "Please enter your email address: " EMAIL
+        if validate_email "$EMAIL"; then
+            break
+        else
+            echo "Invalid email format. Please try again."
+        fi
+    done
+fi
+
+echo "Setting up for email: $EMAIL"
+
 echo "Installing homebrew"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 brew install yadm

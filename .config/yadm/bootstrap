@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# Source yadm config
+if [ -f "$HOME/.config/yadm/config" ]; then
+    source "$HOME/.config/yadm/config"
+fi
+
+# Get the current yadm class
+YADM_CLASS=$(yadm config local.class)
+
+# Perform class-specific actions
+if [ "$YADM_CLASS" = "work" ]; then
+    echo "Setting up work environment for SimilarWeb"
+    # Add work-specific setup here
+else
+    echo "Setting up personal environment"
+    # Add personal setup here
+fi
+
+
 # Install Homebrew if it's not already installed
 if ! command -v brew &> /dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -52,6 +70,9 @@ if [ ! -d "$(bat --config-dir)/themes/Catppuccin" ]; then
     curl -o "$(bat --config-dir)/themes/Catppuccin Macchiato.tmTheme" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Macchiato.tmTheme
     curl -o "$(bat --config-dir)/themes/Catppuccin Mocha.tmTheme" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme
     bat cache --build
+
+# Setup ssh keys
+ssh-keygen -t ed25519 -C "${EMAIL}" -f ~/.ssh/id_ed25519
 
 
 # Set Zsh as the default shell
