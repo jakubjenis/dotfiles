@@ -8,20 +8,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
   dotnet
@@ -39,9 +27,6 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export EDITOR='nvim'
 fi
-
-alias editconfig="code ~/.zshrc"
-alias reload='source ~/.zshrc'
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
@@ -105,7 +90,9 @@ alias c='fd . --type f --hidden --exclude .git | fzf --preview "bat -n --color=a
 eval "$(fzf --zsh)"
 
 # ------------ Zoxide -------------
-alias cd='z'
+if command -v z &> /dev/null; then
+    alias cd='z'
+fi
 eval "$(zoxide init zsh)"
 
 # ------------ Eza -----------
@@ -118,18 +105,9 @@ fi
 if [ -x "$(command -v bat)" ]; then
     alias cat="bat"
 fi
-
-# export BAT_THEME="Visual Studio Dark+"
 export BAT_THEME="Catppuccin Mocha"
 
-# preview themes
-# bat --list-themes | fzf --preview="bat --theme={} --color=always /path/to/file"
-
-# rebuild cache after installing theme
-# bat cache --build
-
 # ------------ TheFuck -------------
-# Setup up fuck as alias for thefuck
 eval $(thefuck --alias)
 
 # ------------ LazyGit --------------
@@ -142,7 +120,13 @@ alias mc='mc -u'
 alias tf='terraform'
 alias tg='terragrunt'
 
+# ------------ ZSH --------------
+alias editconfig="code ~/.zshrc"
+alias reload='source ~/.zshrc'
+
+# ------------ ConsoleNinja --------------
 PATH=~/.console-ninja/.bin:$PATH
+
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

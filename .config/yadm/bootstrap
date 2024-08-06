@@ -11,6 +11,7 @@ handle_error() {
 # Trap errors
 trap 'handle_error $LINENO "$BASH_COMMAND"' ERR
 
+GITHUB_USERNAME="jakubjenis"
 if [ -z "$YADM_CLASS" ]; then
     YADM_CLASS=$(yadm config local.class)
 fi
@@ -67,6 +68,8 @@ else
 fi
 
 # Install bat catpuccin theme for bat
+# preview themes
+# bat --list-themes | fzf --preview="bat --theme={} --color=always /path/to/file"
 if [ ! -d "$(bat --config-dir)/themes/Catppuccin" ]; then
     mkdir -p "$(bat --config-dir)/themes"
     curl -L -o "$(bat --config-dir)/themes/Catppuccin Latte.tmTheme" "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme"
@@ -105,7 +108,7 @@ then
     gh ssh-key add ~/.ssh/id_ed25519.pub --title "MacBook $(date +%Y-%m-%d)"
     
     # Update yadm repository origin to use SSH
-    yadm remote set-url origin git@github.com:yourusername/dotfiles.git
+    yadm remote set-url origin git@github.com:$GITHUB_USERNAME/dotfiles.git
     
     echo "SSH key has been added to GitHub. You can now clone your repositories using SSH."
 else

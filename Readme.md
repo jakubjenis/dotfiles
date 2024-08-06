@@ -19,6 +19,6 @@ Setup with
   - setup ssh keys
   - add ssh-key to GitHub
   - add your SSH key to GitHub (requires GitHub CLI)
-  - mr to map repositories
+  - myrepos to map repositories
 
 Inspired by https://github.com/bjartek/dotfiles
