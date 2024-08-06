@@ -67,16 +67,16 @@ else
     echo "yadm is already installed"
 fi
 
-yadm config local.name  jakubjenis
-yadm config local.email "jakub.jenis@gmail.com"
-
-if [ -d "$HOME/.yadm" ]; then
+if [ -d "$HOME/.config/yadm" ]; then
     echo "YADM is already initialized. Updating and bootstrapping..."
     yadm pull
-    yadm bootstrap
 else
     echo "Cloning YADM dotfiles and bootstrap"
-    yadm clone https://github.com/jakubjenis/dotfiles.git --bootstrap
+    yadm config local.name  jakubjenis
+    yadm config local.email "jakub.jenis@gmail.com"
+    yadm clone https://github.com/jakubjenis/dotfiles.git --no-bootstrap
 fi
+
+yadm bootstrap
 
 

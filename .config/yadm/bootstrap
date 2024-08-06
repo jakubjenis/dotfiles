@@ -140,7 +140,7 @@ fi
 # Install packages from Brewfile
 read -p "Do you want to install packages from Brewfile? (y/n) " answer
 if [[ $answer =~ ^[Yy]$ ]]; then
-    brew bundle --file=~/.Brewfile
+    brew bundle --file=~/Brewfile
 else
     echo "Skipping Brewfile installation."
 fi
