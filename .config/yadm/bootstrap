@@ -1,15 +1,15 @@
 #!/bin/bash
+if [ -z "$YADM_CLASS" ]; then
+    YADM_CLASS=$(yadm config local.class)
+fi
 
 # Source yadm config
 if [ -f "$HOME/.config/yadm/config" ]; then
     source "$HOME/.config/yadm/config"
 fi
 
-# Get the current yadm class
-YADM_CLASS=$(yadm config local.class)
-
 # Perform class-specific actions
-if [ "$YADM_CLASS" = "work" ]; then
+if [ "$YADM_CLASS" = "WORK" ]; then
     echo "Setting up work environment for SimilarWeb"
     # Add work-specific setup here
 else
@@ -24,7 +24,7 @@ if ! command -v brew &> /dev/null; then
 fi
 
 # Install packages from Brewfile
-brew bundle --file=~/.Brewfile
+#brew bundle --file=~/.Brewfile
 
 # Install Oh My Zsh if it's not already installed
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -72,7 +72,37 @@ if [ ! -d "$(bat --config-dir)/themes/Catppuccin" ]; then
     bat cache --build
 
 # Setup ssh keys
-ssh-keygen -t ed25519 -C "${EMAIL}" -f ~/.ssh/id_ed25519
+ssh-keygen -t ed25519 -C "$(yadm config local.email)}" -f ~/.ssh/id_ed25519
+
+# Add ssh-key to GitHub
+# Add your SSH key to GitHub (requires GitHub CLI)
+if ! command -v gh &> /dev/null; then
+    brew install gh
+fi
+# Authenticate with GitHub CLI
+gh auth login -p ssh -w
+# Add the SSH key to your GitHub account
+gh ssh-key add ~/.ssh/id_ed25519.pub --title "MacBook $(date +%Y-%m-%d)"
+
+# Update yadm repository origin to use SSH
+yadm remote set-url origin git@github.com:yourusername/dotfiles.git
+
+echo "SSH key has been generated and added to GitHub. You can now clone your repositories using SSH."
+
+
+# generate .gitconfig file in repos/work folder with email set to work email
+git config --global user.email "$(yadm config local.email)"
+
+
+# Perform class-specific actions
+if [ "$YADM_CLASS" = "WORK" ]; then
+    echo "Setting up work environment for SimilarWeb"
+
+    git config --global includeIf."gitdir:$HOME/repos/work/".path "$HOME/.gitconfig-work"
+    echo "[user]
+        email = $(yadm config WORK.email)" > "$HOME/.gitconfig-work
+        name = $(yadm config WORK.name)" > "$HOME/.gitconfig-work"
+fi
 
 
 # Set Zsh as the default shell

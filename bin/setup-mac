@@ -1,4 +1,5 @@
 #!/bin/bash
+PERSONAL_EMAIL=$(yadm config local.email)
 
 # Function to validate email
 validate_email() {
@@ -9,26 +10,59 @@ validate_email() {
     fi
 }
 
-# Check if email is provided as an argument
-if [ $# -eq 1 ]; then
-    EMAIL=$1
-else
+yadm config local.name  jakubjenis
+yadm config local.email "jakub.jenis@gmail.com"
+
+# Prompt the user if this setup is work of personal
+read -p "Is this a work environment? [y/n] " is_work
+case $is_work in
+    [Yy]* ) 
+        echo "Setting yadm config local.class to WORK"
+        yadm config local.class WORK
+        ;;
+    [Nn]* ) echo "Setting yadm config local.class to PERSONAL"
+        yadm config local.class PERSONAL
+        yadm config --unset-all local.class.WORK
+        ;;
+    * ) echo "Invalid input. Please enter 'y' or 'n'." ;;
+esac
+
+# Check if YADM_CLASS is set to "work"
+if [ "$(yadm config local.class)" = "WORK" ]; then
+    yadm config local.class WORK
+
+    #Ask for workName interactively
+    while true; do
+        read -p "Please enter your work name: " WORK_NAME
+        if [ -n "$WORK_NAME" ]; then
+            break
+        else
+            echo "Invalid email format. Please try again."
+        fi    
+    done
+    echo "Setting yadm WORK.name to $WORK_NAME"
+    yadm config WORK.name $WORK_NAME
+
     # Ask for email interactively
     while true; do
-        read -p "Please enter your email address: " EMAIL
-        if validate_email "$EMAIL"; then
+        read -p "Please enter your work email address: " WORK_EMAIL
+        if validate_email "$WORK_EMAIL"; then
             break
         else
             echo "Invalid email format. Please try again."
         fi
     done
+    echo "Setting yadm WORK.email to $WORK_EMAIL"
+    yadm config WORK.email $WORK_EMAIL
+
 fi
 
-echo "Setting up for email: $EMAIL"
 
 echo "Installing homebrew"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 brew install yadm
 
-echo "Cloning dotfiles"
-yadm clone https://github.com/jakubjenis/dotfiles.git
+echo "Cloning YADM dotfiles and bootstrap"
+yadm clone https://github.com/jakubjenis/dotfiles.git --bootstrap
+
+
