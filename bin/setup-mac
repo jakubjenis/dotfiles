@@ -10,9 +10,6 @@ validate_email() {
     fi
 }
 
-yadm config local.name  jakubjenis
-yadm config local.email "jakub.jenis@gmail.com"
-
 # Prompt the user if this setup is work of personal
 read -p "Is this a work environment? [y/n] " is_work
 case $is_work in
@@ -71,6 +68,9 @@ if ! command -v yadm &> /dev/null; then
 else
     echo "yadm is already installed"
 fi
+
+yadm config local.name  jakubjenis
+yadm config local.email "jakub.jenis@gmail.com"
 
 if [ -d "$HOME/.yadm" ]; then
     echo "YADM is already initialized. Updating and bootstrapping..."

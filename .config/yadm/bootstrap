@@ -32,7 +32,7 @@ fi
 
 if [ -d "$HOME/.config/iterm2" ]; then
     echo "Setting iTerm preference folder"
-    defaults write com.googlecode.iterm2 PrefsCustomFolder $HOME/.config/iterm2
+    defaults write com.googlecode.iterm2 PrefsCustomFolder "$HOME/.config/iterm2"
     defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
 fi
 
@@ -157,5 +157,13 @@ if [[ $answer =~ ^[Yy]$ ]]; then
 else
     echo "Skipping .mrconfig installation."
 fi
+
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+# in tmux 
+#prefix+I 
+#prefix+r
+
+#brew install font-meslo-lg-nerd-font
+#alactitty
 
 echo "Bootstrap complete! Restart your shell to see changes."
