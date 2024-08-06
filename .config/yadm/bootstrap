@@ -1,4 +1,16 @@
 #!/bin/bash
+set -e
+
+# Function to handle errors
+handle_error() {
+    echo "Error occurred in script at line $1"
+    echo "Error message: $2"
+    exit 1
+}
+
+# Trap errors
+trap 'handle_error $LINENO "$BASH_COMMAND"' ERR
+
 if [ -z "$YADM_CLASS" ]; then
     YADM_CLASS=$(yadm config local.class)
 fi
@@ -124,7 +136,6 @@ else
     echo "Skipping Brewfile installation."
 fi
 
-
 # use .mrconfig to clone repos
 read -p "Do you want to use .mrconfig to clone repos? (y/n) " answer
 if [[ $answer =~ ^[Yy]$ ]]; then
@@ -132,10 +143,10 @@ if [[ $answer =~ ^[Yy]$ ]]; then
         echo "mr is not installed. Installing mr..."
         brew install mr
     fi
-    mr -c
+    mr -j 10 co
+    mr -j 10 update
 else
     echo "Skipping .mrconfig installation."
 fi
-
 
 echo "Bootstrap complete! Restart your shell to see changes."

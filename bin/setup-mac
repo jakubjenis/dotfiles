@@ -58,11 +58,27 @@ if [ "$(yadm config local.class)" = "WORK" ]; then
 fi
 
 
-echo "Installing homebrew"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-brew install yadm
+if ! command -v brew &> /dev/null; then
+    echo "Installing homebrew"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+else
+    echo "Homebrew is already installed"
+fi
 
-echo "Cloning YADM dotfiles and bootstrap"
-yadm clone https://github.com/jakubjenis/dotfiles.git --bootstrap
+if ! command -v yadm &> /dev/null; then
+    echo "Installing yadm"
+    brew install yadm
+else
+    echo "yadm is already installed"
+fi
+
+if [ -d "$HOME/.yadm" ]; then
+    echo "YADM is already initialized. Updating and bootstrapping..."
+    yadm pull
+    yadm bootstrap
+else
+    echo "Cloning YADM dotfiles and bootstrap"
+    yadm clone https://github.com/jakubjenis/dotfiles.git --bootstrap
+fi
 
 

@@ -6,7 +6,8 @@ Setup with
 
 - install homebrew
 - install yadm with homebrew
-- yadm pull
+  - prompt for work name and email if work environment
+- yadm clone / pull
 - yadm bootstrap
   - install homebrew packages
   - install oh-my-zsh
@@ -18,6 +19,6 @@ Setup with
   - setup ssh keys
   - add ssh-key to GitHub
   - add your SSH key to GitHub (requires GitHub CLI)
-- mr to map repositories
+  - mr to map repositories
 
 Inspired by https://github.com/bjartek/dotfiles
