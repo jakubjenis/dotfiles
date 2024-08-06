@@ -14,7 +14,7 @@ Setup with
   - install zsh-autosuggestions
   - install zsh-syntax-highlighting
   - install powerlevel10k
-  - install sdkman
+  - install sdkmann
   - install bat catpuccin theme
   - setup ssh keys
   - add ssh-key to GitHub
