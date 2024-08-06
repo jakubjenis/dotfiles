@@ -3,11 +3,6 @@ if [ -z "$YADM_CLASS" ]; then
     YADM_CLASS=$(yadm config local.class)
 fi
 
-# Source yadm config
-if [ -f "$HOME/.config/yadm/config" ]; then
-    source "$HOME/.config/yadm/config"
-fi
-
 # Perform class-specific actions
 if [ "$YADM_CLASS" = "WORK" ]; then
     echo "Setting up work environment for SimilarWeb"
@@ -17,14 +12,10 @@ else
     # Add personal setup here
 fi
 
-
 # Install Homebrew if it's not already installed
 if ! command -v brew &> /dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
-
-# Install packages from Brewfile
-#brew bundle --file=~/.Brewfile
 
 # Install Oh My Zsh if it's not already installed
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -65,47 +56,86 @@ fi
 
 # Install bat catpuccin theme for bat
 if [ ! -d "$(bat --config-dir)/themes/Catppuccin" ]; then
-    curl -o "$(bat --config-dir)/themes/Catppuccin Latte.tmTheme" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme
-    curl -o "$(bat --config-dir)/themes/Catppuccin Frappe.tmTheme" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Frappe.tmTheme
-    curl -o "$(bat --config-dir)/themes/Catppuccin Macchiato.tmTheme" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Macchiato.tmTheme
-    curl -o "$(bat --config-dir)/themes/Catppuccin Mocha.tmTheme" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme
+    mkdir -p "$(bat --config-dir)/themes"
+    curl -L -o "$(bat --config-dir)/themes/Catppuccin Latte.tmTheme" "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Latte.tmTheme"
+    curl -L -o "$(bat --config-dir)/themes/Catppuccin Frappe.tmTheme" "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Frappe.tmTheme"
+    curl -L -o "$(bat --config-dir)/themes/Catppuccin Macchiato.tmTheme" "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Macchiato.tmTheme"
+    curl -L -o "$(bat --config-dir)/themes/Catppuccin Mocha.tmTheme" "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme"
     bat cache --build
+fi
 
 # Setup ssh keys
-ssh-keygen -t ed25519 -C "$(yadm config local.email)}" -f ~/.ssh/id_ed25519
-
-# Add ssh-key to GitHub
-# Add your SSH key to GitHub (requires GitHub CLI)
-if ! command -v gh &> /dev/null; then
-    brew install gh
+if [ ! -f ~/.ssh/id_ed25519 ]; then
+    read -p "No existing SSH key found. Do you want to generate a new SSH key? (y/n) " generate_ssh
+    if [[ $generate_ssh =~ ^[Yy]$ ]]
+    then
+        ssh-keygen -t ed25519 -C "$(yadm config local.email)" -f ~/.ssh/id_ed25519 -N ""
+        
+        # Add ssh-key to GitHub
+        # Add your SSH key to GitHub (requires GitHub CLI)
+        if ! command -v gh &> /dev/null; then
+            brew install gh
+        fi
+    else
+        echo "Skipping SSH key generation."
+    fi
+else
+    echo "Existing SSH key found. Skipping SSH key generation."
 fi
-# Authenticate with GitHub CLI
-gh auth login -p ssh -w
-# Add the SSH key to your GitHub account
-gh ssh-key add ~/.ssh/id_ed25519.pub --title "MacBook $(date +%Y-%m-%d)"
 
-# Update yadm repository origin to use SSH
-yadm remote set-url origin git@github.com:yourusername/dotfiles.git
+# Prompt to add SSH key to GitHub
+read -p "Do you want to add the SSH key to GitHub? (y/n) " add_to_github
+if [[ $add_to_github =~ ^[Yy]$ ]]
+then
+    # Authenticate with GitHub CLI
+    gh auth login -p ssh -w
+    # Add the SSH key to your GitHub account
+    gh ssh-key add ~/.ssh/id_ed25519.pub --title "MacBook $(date +%Y-%m-%d)"
+    
+    # Update yadm repository origin to use SSH
+    yadm remote set-url origin git@github.com:yourusername/dotfiles.git
+    
+    echo "SSH key has been added to GitHub. You can now clone your repositories using SSH."
+else
+    echo "Skipping adding SSH key to GitHub."
+fi
 
-echo "SSH key has been generated and added to GitHub. You can now clone your repositories using SSH."
-
-
-# generate .gitconfig file in repos/work folder with email set to work email
-git config --global user.email "$(yadm config local.email)"
-
-
-# Perform class-specific actions
 if [ "$YADM_CLASS" = "WORK" ]; then
     echo "Setting up work environment for SimilarWeb"
 
-    git config --global includeIf."gitdir:$HOME/repos/work/".path "$HOME/.gitconfig-work"
+    # generate .gitconfig file in repos/work folder with email set to work email
+    mkdir -p "$HOME/repos/work"
     echo "[user]
-        email = $(yadm config WORK.email)" > "$HOME/.gitconfig-work
-        name = $(yadm config WORK.name)" > "$HOME/.gitconfig-work"
+        email = $(yadm config WORK.email)
+        name = $(yadm config WORK.name)" > "$HOME/repos/work/.gitconfig"
+fi
+
+# Set Zsh as the default shell
+if [ "$SHELL" != "$(which zsh)" ]; then
+    echo "Changing default shell to Zsh. You may be prompted for your password."
+    chsh -s $(which zsh)
+fi
+
+# Install packages from Brewfile
+read -p "Do you want to install packages from Brewfile? (y/n) " answer
+if [[ $answer =~ ^[Yy]$ ]]; then
+    brew bundle --file=~/.Brewfile
+else
+    echo "Skipping Brewfile installation."
 fi
 
 
-# Set Zsh as the default shell
-chsh -s $(which zsh)
+# use .mrconfig to clone repos
+read -p "Do you want to use .mrconfig to clone repos? (y/n) " answer
+if [[ $answer =~ ^[Yy]$ ]]; then
+    if ! command -v mr &> /dev/null; then
+        echo "mr is not installed. Installing mr..."
+        brew install mr
+    fi
+    mr -c
+else
+    echo "Skipping .mrconfig installation."
+fi
+
 
 echo "Bootstrap complete! Restart your shell to see changes."

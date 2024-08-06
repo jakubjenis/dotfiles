@@ -1,12 +1,14 @@
 [user]
 	name = Jakub Jenis
-	email = jakubjenis@gmail.com
+	email = jakub.jenis@gmail.com
 [core]
 	autocrlf = input
 [url "ssh://git@ssh.github.com:443/"]
 	insteadOf = git@github.com:
 [push]
 	AutoSetupRemote = true
+[color]
+	ui = auto
 [filter "lfs"]
 	required = true
 	clean = git-lfs clean -- %f
