@@ -1,6 +1,4 @@
 #!/bin/bash
-PERSONAL_EMAIL=$(yadm config local.email)
-
 # Function to validate email
 validate_email() {
     if [[ "$1" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$ ]]; then
